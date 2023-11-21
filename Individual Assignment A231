@@ -1,0 +1,116 @@
+import sys, os
+os.system('cls')
+
+# The list of loan Calculations
+Loan_Calculations = []
+
+def Cal_month_instalment(principal_loan, annual_interest_rate, loan_years):
+    monthly_payment = principal_loan * (
+             (annual_interest_rate / 12) * (1 + (annual_interest_rate / 12))**(loan_years * 12)
+        ) / (((1 + (annual_interest_rate / 12))**(loan_years * 12)) - 1)
+    return monthly_payment
+
+def Cal_total_amount_payable_loan (monthly_payment,loan_years):
+      amount_payable_loan = monthly_payment * (loan_years * 12)
+      return amount_payable_loan
+
+def Cal_Debt_Service_Ratio (monthly_income, monthly_commitments):
+      total_commitments = sum(monthly_commitments)
+      DSR = (total_commitments/ monthly_income)*100
+      return DSR
+
+#set Mainmenu
+def   main():
+      print('\nMenu')
+      print('1. To Calculate Housing loan')
+      print('2. To Check Previous Calculation of Housing Loan')
+      print('3. To Delete Previous Data')
+      print('4. Exit')
+      choice = input('Please enter your selection: ')
+    
+      if choice == '1':
+            while True:
+                  principal_loan = float(input('Please kindly fill in your principal housing loan! >.< :'))
+                  if principal_loan <= 0:
+                        print('There is an error in this part.')
+                        break
+
+                  annual_interest_rate = float(input('Please kindly fill in your annual interest rate! >.< : '))
+                  if annual_interest_rate <= 0:
+                       print('There is an error in this part.')
+                       break
+
+                  loan_years = int(input('Please fill in your loan term (years):'))
+                  if loan_years <= 0:
+                      print('There is an error in this part.')
+                      break
+
+                  monthly_income = float(input('Please kindly fill in your monthly income >.< :'))
+                  if monthly_income <= 0:
+                      print('There is an error at this part. Income cannot be zero.')
+                      break
+
+                  monthly_commitments = float(input('Please fill in the information about your monthly commitments: '))
+                  if monthly_commitments >= monthly_income or monthly_commitments <= 0:
+                      print('There is an error in this part.')
+                      break
+
+
+                  monthly_payment = Cal_month_instalment(principal_loan, annual_interest_rate, loan_years)
+                  amount_payable_loan = Cal_total_amount_payable_loan(monthly_payment, loan_years)
+                  DSR = Cal_Debt_Service_Ratio(monthly_income, [monthly_commitments])
+            
+                  if DSR <= 70:
+                     DSR_status = 'No Eligible'
+                     print('Sorry, you are not eligible for a housing loan!')
+                  else:
+                     DSR_status = 'Eligible'
+                     print('Congratulations!!! You are eligible for a housing loan!')
+
+                  print('\nLoan Details')
+                  print('1. Monthly Installment:', monthly_payment)
+                  print('2. Total Amount Payable:', amount_payable_loan)
+                  print('3. Debt Service Ratio (DSR):', round(DSR, 2), DSR_status)
+
+                  Loan_Calculations.append({
+                   'Principal (RM)': principal_loan,
+                   'Annual Interest Rate (%)': annual_interest_rate,
+                   'Loan Term (years)': loan_years,
+                   'Monthly Income (RM)': monthly_income,
+                   'Monthly Commitments (RM)': monthly_commitments,
+                   'Monthly Installments (RM)': monthly_payment,
+                   'Total Amount Payable (RM)': amount_payable_loan,
+                   'DSR': round(DSR, 2),
+                   'DSR Status': DSR_status
+                  })
+                  print ('--------------------------------------------------')
+                  break
+            main()
+            
+       
+      elif choice =='2' :
+            if not Loan_Calculations:
+                   print('Sorry! you cannot display previous calculation due to no history calculation.')
+            else :
+                   print('\nPrevious Loan Calculations:')
+                   for index, calculation in enumerate(Loan_Calculations, start=1):
+                    print(f"\nCalculation {index}:")
+                    for key, value in calculation.items():
+                        print(f"{key}: {value}")
+            main()
+
+      elif choice =='3':
+            if not Loan_Calculations:
+                   print('Sorry! There was not any history calculation since cannot delete')
+            else:
+                   Loan_Calculations.clear()
+                   print('History calculation have been successful delete! >.<')
+            main()
+      
+      elif choice =='4':
+            print('Goodbye and Have a nice day! >.<') 
+            sys.exit()
+
+if __name__ == '__main__':
+      main() 
+               
